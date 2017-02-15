@@ -11,11 +11,17 @@ import java.io.IOException;
 public abstract class TweetStream implements StatusListener {
 
     public static void main(String[] args) throws TwitterException, IOException{
+
+        TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
+
         StatusListener listener = new StatusListener(){
+
             public void onStatus(Status status) {
-                System.out.println(status.getUser().getName() + " : " + status.getText());
+                System.out.println(status.getCreatedAt() + "," + status.getText() + "\n");
             }
+
             public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
+
             public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
 
             @Override
@@ -32,10 +38,14 @@ public abstract class TweetStream implements StatusListener {
                 ex.printStackTrace();
             }
         };
-        TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
+
+        FilterQuery tweetFilterQuery = new FilterQuery();
+
+        String keywords[] = {"#TRUMP"};
+        tweetFilterQuery.track(keywords);
+        tweetFilterQuery.language(new String[]{"en"});
         twitterStream.addListener(listener);
-        // sample() method internally creates a thread which manipulates TwitterStream and calls these adequate listener methods continuously.
-        twitterStream.sample();
+        twitterStream.filter(tweetFilterQuery);
     }
 
 }
