@@ -5,12 +5,7 @@
 package StreamTweets;
 
 import twitter4j.*;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,18 +13,21 @@ public abstract class TweetStream implements StatusListener {
 
     public static void main(String[] args) throws TwitterException, IOException{
 
-        final Path file = Paths.get("TwitterStreamForTrump.txt");
+        final File file = new File("TwitterStreamForTrump.txt");
+        String searchWords[] = {"#Trump"};
 
         TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 
         StatusListener listener = new StatusListener(){
 
             public void onStatus(Status status) {
-                try {
+                try (FileWriter fileWrite = new FileWriter(file, true);
+                    BufferedWriter bufferWrite = new BufferedWriter(fileWrite);
+                    PrintWriter out = new PrintWriter(bufferWrite))
+                {
                     System.out.println(status.getCreatedAt() + "," + status.getText() + "\n");
                     List<String> lines = Arrays.asList(status.getCreatedAt() + "," + status.getText() + "\n");
-                    //Creates and writes to file in the working directory i.e. the location of the project.
-                    Files.write(file, lines, Charset.forName("UTF-8"));
+                    out.println(lines);
                 }
                 catch(IOException e){
                     System.out.print(e);
@@ -56,8 +54,7 @@ public abstract class TweetStream implements StatusListener {
         };
 
         FilterQuery tweetFilterQuery = new FilterQuery();
-        String keywords[] = {"#Trump"};
-        tweetFilterQuery.track(keywords);
+        tweetFilterQuery.track(searchWords);
         tweetFilterQuery.language(new String[]{"en"});
         twitterStream.addListener(listener);
         twitterStream.filter(tweetFilterQuery);
