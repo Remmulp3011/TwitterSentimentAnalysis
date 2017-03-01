@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PRCOSentimentAnalysis.iml" filepath="$PROJECT_DIR$/PRCOSentimentAnalysis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/java/SearchForTweets/SearchForTweets.iml" filepath="$PROJECT_DIR$/src/main/java/SearchForTweets/SearchForTweets.iml" />
     </modules>
   </component>
 </project>
