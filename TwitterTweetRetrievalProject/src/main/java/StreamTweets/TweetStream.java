@@ -21,16 +21,16 @@ public abstract class TweetStream implements StatusListener {
         StatusListener listener = new StatusListener(){
 
             public void onStatus(Status status) {
-                try (FileWriter fileWrite = new FileWriter(file, true);
-                    BufferedWriter bufferWrite = new BufferedWriter(fileWrite);
-                    PrintWriter out = new PrintWriter(bufferWrite))
-                {
-                    System.out.println(status.getCreatedAt() + "," + status.getText() + "\n");
-                    List<String> lines = Arrays.asList(status.getCreatedAt() + "," + status.getText() + "\n");
-                    out.println(lines);
-                }
-                catch(IOException e){
-                    System.out.print(e);
+                if(status.isRetweet() == false) {
+                    try (FileWriter fileWrite = new FileWriter(file, true);
+                         BufferedWriter bufferWrite = new BufferedWriter(fileWrite);
+                         PrintWriter out = new PrintWriter(bufferWrite)) {
+                        System.out.println(status.getCreatedAt() + "," + status.getText() + "\n");
+                        List<String> lines = Arrays.asList(status.getCreatedAt() + "," + status.getText() + "\n");
+                        out.println(lines);
+                    } catch (IOException e) {
+                        System.out.print(e);
+                    }
                 }
             }
 
@@ -56,6 +56,7 @@ public abstract class TweetStream implements StatusListener {
         FilterQuery tweetFilterQuery = new FilterQuery();
         tweetFilterQuery.track(searchWords);
         tweetFilterQuery.language(new String[]{"en"});
+        //Call listen which will write the results
         twitterStream.addListener(listener);
         twitterStream.filter(tweetFilterQuery);
     }
