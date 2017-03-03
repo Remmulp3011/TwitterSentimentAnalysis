@@ -25,8 +25,8 @@ public abstract class TweetStream implements StatusListener {
                     try (FileWriter fileWrite = new FileWriter(file, true);
                          BufferedWriter bufferWrite = new BufferedWriter(fileWrite);
                          PrintWriter out = new PrintWriter(bufferWrite)) {
-                        System.out.println(status.getCreatedAt() + "," + status.getText() + "\n");
-                        List<String> lines = Arrays.asList(status.getCreatedAt() + "," + status.getText() + "\n");
+                        System.out.println(status.getCreatedAt() + "SPLIT HERE" + status.getText() + "SPLIT HERE" + "\n");
+                        List<String> lines = Arrays.asList(status.getCreatedAt() + "SPLIT HERE" + status.getText() + "SPLIT HERE" + "\n");
                         out.println(lines);
                     } catch (IOException e) {
                         System.out.print(e);
