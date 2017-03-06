@@ -3,6 +3,7 @@ package MongoDB;
 /**
  * Created by matthewplummer on 01/03/2017.
  */
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Mongo {
-    public static String date, text;
+    public static String tweetDate, tweetText;
 
     public static void main (String[] args) {
         //Connect to Database
@@ -21,8 +22,7 @@ public class Mongo {
             // if it's a member of a replica set:
             MongoClient mongoClient = new MongoClient("localhost", 27017);
             DB db = mongoClient.getDB("TwitterAnalysis");
-            DBCollection coll = db.getCollection("sentiment");
-            System.out.print(coll);
+            DBCollection coll = db.getCollection("twitter_data");
 
             //Read and split the text file for date and text
             try {
@@ -30,11 +30,20 @@ public class Mongo {
                 read.useDelimiter("SPLIT HERE");
 
                 while (read.hasNext()) {
-                    date = read.next();
-                    text = read.next();
-                    System.out.println( date + " " + text + "\n"); // just for debugging
+                    tweetDate = read.next();
+                    tweetText = read.next();
+                    tweetDate = tweetDate.replace("]","");
+                    tweetDate = tweetDate.replace("[","");
 
+                    BasicDBObjectBuilder documentBuilderDetail = BasicDBObjectBuilder.start()
+                    .add("tweetDate", tweetDate)
+                    .add("tweetText", tweetText)
+                    .add("sentimentFound", "NULL")
+                    .add("overallSentiment", "NULL");
+
+                    coll.insert(documentBuilderDetail.get());
                 }
+                System.out.println(coll);
                 read.close();
             }
             catch (IOException e)
