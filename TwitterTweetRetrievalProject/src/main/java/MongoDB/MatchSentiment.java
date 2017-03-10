@@ -2,8 +2,6 @@ package MongoDB;
 
 import com.mongodb.*;
 
-
-import javax.swing.text.Document;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,10 +78,10 @@ public class MatchSentiment {
                     matchFound = twitterText.contains(sentimentWord);
                     if(matchFound == true)
                     {
-                        System.out.println("MATCH FOUND!!");
+                        System.out.println("MATCH FOUND!!");//used for debugging
                         wordPolarity = sentimentPolarityDocumentList.get(sentimentAndPolarityIndex);
-
-/*                        BasicDBObject newTwitterDataDocument = new BasicDBObject();
+                        /*
+                        BasicDBObject newTwitterDataDocument = new BasicDBObject();
 
                         //Key to change and value to change to. Use $set to only change specified key value
                         newTwitterDataDocument.append("$set", new BasicDBObject().append("sentimentFound", sentimentWordDocumentList.get(sentimentAndPolarityIndex) + ","));
@@ -92,7 +90,8 @@ public class MatchSentiment {
                         //Find the id that needs to be changed
                         BasicDBObject searchQuery = new BasicDBObject().append("_id", tweetId);
                         //Find the id and change the value to stated
-                        twitterColl.insert(searchQuery,newTwitterDataDocument);*/
+                        twitterColl.insert(searchQuery,newTwitterDataDocument);
+                        */
 
                         if(wordPolarity.equals("positive"))
                         {
