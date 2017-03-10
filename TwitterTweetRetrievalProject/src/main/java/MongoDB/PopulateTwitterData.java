@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Mongo {
+public class PopulateTwitterData {
     public static String tweetDate, tweetText;
 
     public static void main (String[] args) {
@@ -22,7 +22,7 @@ public class Mongo {
             // if it's a member of a replica set:
             MongoClient mongoClient = new MongoClient("localhost", 27017);
             DB db = mongoClient.getDB("TwitterAnalysis");
-            DBCollection coll = db.getCollection("twitter_data");
+            DBCollection twitterColl = db.getCollection("twitter_data");
 
             //Read and split the text file for date and text
             try {
@@ -41,9 +41,9 @@ public class Mongo {
                     .add("sentimentFound", "NULL")
                     .add("overallSentiment", "NULL");
 
-                    coll.insert(documentBuilderDetail.get());
+                    twitterColl.insert(documentBuilderDetail.get());
                 }
-                System.out.println(coll);
+                System.out.println(twitterColl);
                 read.close();
             }
             catch (IOException e)
