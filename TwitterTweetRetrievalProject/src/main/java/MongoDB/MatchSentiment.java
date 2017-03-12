@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class MatchSentiment {
 
-
     public static void main(String[] args) {
         List<String> twitterDocumentList = new ArrayList<>();
         List<String> sentimentWordDocumentList = new ArrayList<>();
@@ -34,51 +33,50 @@ public class MatchSentiment {
 
             //To be used to filter down to specific fields
             BasicDBObject allQuery = new BasicDBObject();
+            BasicDBObject searchField = new BasicDBObject();
 
             //Filter for field
-            BasicDBObject wordField = new BasicDBObject();
-            wordField.put("word", 1);
-            DBCursor sentimentWordDataCursor = sentimentColl.find(allQuery,wordField);
-            while( sentimentWordDataCursor.hasNext() ) {
-                BasicDBObject currentDocument =  (BasicDBObject) sentimentWordDataCursor.next();
+            searchField.clear();//ensure it is empty
+            searchField.put("word", 1);
+            DBCursor sentimentWordDataCursor = sentimentColl.find(allQuery, searchField);
+            //loading in sentiment table
+            while (sentimentWordDataCursor.hasNext()) {
+                BasicDBObject currentDocument = (BasicDBObject) sentimentWordDataCursor.next();
                 sentimentWordDocumentList.add(currentDocument.getString("word")); //do this to only get the word
             }
-            for(int i = 0; i < sentimentWordDocumentList.size(); i++) {
-                System.out.println(sentimentWordDocumentList.get(i));
-            }
 
             //Filter for field
-            BasicDBObject polarityField = new BasicDBObject();
-            polarityField.put("polarity", 1);
-            DBCursor sentimentPolarityDataCursor = sentimentColl.find(allQuery,polarityField);
-            while( sentimentPolarityDataCursor.hasNext() ) {
+            searchField.clear();//remove previous
+            searchField.put("polarity", 1);
+            DBCursor sentimentPolarityDataCursor = sentimentColl.find(allQuery, searchField);
+            //loading in polarity table
+            while (sentimentPolarityDataCursor.hasNext()) {
                 BasicDBObject currentDocument = (BasicDBObject) sentimentPolarityDataCursor.next();
                 sentimentPolarityDocumentList.add(currentDocument.getString("polarity")); //do this to only get the polarity
             }
-            for(int i = 0; i < sentimentPolarityDocumentList.size(); i++) {
-                System.out.println(sentimentPolarityDocumentList.get(i));
-            }
 
             DBCursor twitterDataCursor = twitterColl.find();
-            while( twitterDataCursor.hasNext() ) {
+            //loading in Twitter table
+            while (twitterDataCursor.hasNext()) {
                 BasicDBObject currentDocument = (BasicDBObject) twitterDataCursor.next();
                 twitterDocumentList.add(currentDocument.getString("_id"));
                 twitterDocumentList.add(currentDocument.getString("tweetText"));
                 twitterDocumentList.add(currentDocument.getString("tweetDate"));
                 twitterDocumentList.add(currentDocument.getString("sentimentFound"));
                 twitterDocumentList.add(currentDocument.getString("overallSentiment"));
-                //At end before next iteration be sure to clear the list.
-                overallSentimentValue = 0;
+
+                overallSentimentValue = 0;//reset the sentiment value
                 tweetId = twitterDocumentList.get(0);
 
-                for(int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++)
-                {
+                for (int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++) {
                     twitterText = twitterDocumentList.get(1);
                     sentimentWord = sentimentWordDocumentList.get(sentimentAndPolarityIndex);
                     matchFound = twitterText.contains(sentimentWord);
-                    if(matchFound == true)
-                    {
+
+                    if (matchFound == true) {
+
                         System.out.println("MATCH FOUND!!");//used for debugging
+
                         wordPolarity = sentimentPolarityDocumentList.get(sentimentAndPolarityIndex);
                         /*
                         BasicDBObject newTwitterDataDocument = new BasicDBObject();
@@ -93,12 +91,9 @@ public class MatchSentiment {
                         twitterColl.insert(searchQuery,newTwitterDataDocument);
                         */
 
-                        if(wordPolarity.equals("positive"))
-                        {
+                        if (wordPolarity.equals("positive")) {
                             overallSentimentValue += 1;
-                        }
-                        else
-                        {
+                        } else {
                             overallSentimentValue -= 1;
                         }
                     }
@@ -109,10 +104,10 @@ public class MatchSentiment {
                 newTwitterDataDocument.append("$set", new BasicDBObject().append("overallSentiment", overallSentimentValue));
                 //Find the id that needs to be changed
                 BasicDBObject searchQuery = new BasicDBObject().append("_id", tweetId);
-                //Find the id and change the value to stated
-                twitterColl.update(searchQuery,newTwitterDataDocument);
+                //Find the id and change the value to that stated
+                twitterColl.update(searchQuery, newTwitterDataDocument);
 
-                twitterDocumentList.clear();
+                twitterDocumentList.clear();//clear the array list for the Twitter data for next iteration
             }
         } catch (IOException e) {
             System.out.println(e);

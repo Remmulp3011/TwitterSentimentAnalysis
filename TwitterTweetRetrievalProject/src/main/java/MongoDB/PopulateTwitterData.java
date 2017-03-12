@@ -31,17 +31,23 @@ public class PopulateTwitterData {
 
                 while (read.hasNext()) {
                     tweetDate = read.next();
-                    tweetText = read.next();
-                    tweetDate = tweetDate.replace("]","");
-                    tweetDate = tweetDate.replace("[","");
+                    if (tweetDate.isEmpty() || tweetDate.equals("") || tweetDate.equals(" ")) {
+                        continue;
+                    } else {
+                        tweetText = read.next();
+                        tweetDate = tweetDate.replace("]", "");
+                        tweetDate = tweetDate.replace("[", "");
+                        tweetDate.replace("\n", "").replace("\r", "");
 
-                    BasicDBObjectBuilder documentBuilderDetail = BasicDBObjectBuilder.start()
-                    .add("tweetDate", tweetDate)
-                    .add("tweetText", tweetText)
-                    .add("sentimentFound", "NULL")
-                    .add("overallSentiment", "NULL");
+                        BasicDBObjectBuilder documentBuilderDetail = BasicDBObjectBuilder.start()
+                                .add("tweetDate", tweetDate)
+                                .add("tweetText", tweetText)
+                                .add("sentimentFound", "NULL")
+                                .add("overallSentiment", "NULL");
 
-                    twitterColl.insert(documentBuilderDetail.get());
+                        twitterColl.insert(documentBuilderDetail.get());
+                    }
+
                 }
                 System.out.println(twitterColl);
                 read.close();
