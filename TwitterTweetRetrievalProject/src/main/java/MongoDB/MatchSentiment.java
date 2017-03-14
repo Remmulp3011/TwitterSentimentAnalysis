@@ -1,3 +1,4 @@
+/*
 package MongoDB;
 
 import com.mongodb.*;
@@ -6,9 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * Created by matthewplummer on 10/03/2017.
- */
+ *//*
+
 public class MatchSentiment {
 
     public static void main(String[] args) {
@@ -82,12 +85,15 @@ public class MatchSentiment {
 
                         wordPolarity = sentimentPolarityDocumentList.get(sentimentAndPolarityIndex);
 
-                        /*
+                        */
+/*
                         Wont work due to the face that with each iteration when using $set it will be replaced.
                         Therefore the value will not be added so a record will not be made it will be replaced each time.
                         If $set is not used a new document will be created with the specified contents copied and the change made to the copy for the field.
-                        */
+                        *//*
 
+
+*/
 /*                        BasicDBObject newTwitterDataDocument = new BasicDBObject();
 
                         //Key to change and value to change to. Use $set to only change specified key value
@@ -98,7 +104,8 @@ public class MatchSentiment {
                         //Find the tweet that needs to be changed, see explanation below as to why tweetText is used.
                         BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
                         //Find the id and change the value to stated
-                        twitterColl.insert(searchQuery,newTwitterDataDocument);*/
+                        twitterColl.insert(searchQuery,newTwitterDataDocument);*//*
+
 
                         if (wordPolarity.equals("positive")) {
                             overallSentimentValue += 1;
@@ -125,7 +132,8 @@ public class MatchSentiment {
                 //Key to change and value to change to. Use $set to only change specified key value
                 newTwitterDataDocument.append("$set", new BasicDBObject().append("overallSentiment", overallSentimentValue));
                 //Construct the string that needs to be searched in order to find the correct id
-                /*
+                */
+/*
                 Having to do twitter text due to the face that quotations are added to the parameter.
                 e.g.for searching for ID you need: ObjectID("+tweetId+")
                 "ObjectID(\""+tweetId+"\")" when declared will become "ObjectID(\"+tweetId+\")" due to the addition quotations.
@@ -133,7 +141,8 @@ public class MatchSentiment {
                 Solution could be to change code to create my own ID system so a random object ID is not created.
                 For now the twitterText field will be used as it is unique for each tweet.
                 In the rare occasion someone will copy and paste a Tweet both will be the same and both will be updated each time they are met.
-                */
+                *//*
+
                 //Find the tweet that needs to be changed
                 BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
                 //Find the id and change the value to that stated
@@ -141,12 +150,15 @@ public class MatchSentiment {
 
                 twitterDocumentList.clear();//clear the array list for the Twitter data for next iteration
             }
+            System.out.println("Total number of tweets = " + totalDocuments);
             System.out.println("Number of tweets positive = " + sentimentCounterPositive);
             System.out.println("Number of tweets negative = " + sentimentCounterNegative);
             System.out.println("Number of tweets neutral = " + sentimentCounterNeutral);
-            System.out.println("Number of tweets = " + totalDocuments);
+            System.out.println("Percentage of tweets positive = " + ((sentimentCounterPositive/totalDocuments) * 100) + "%");
+            System.out.println("Percentage of tweets negative = " + ((sentimentCounterNegative/totalDocuments) * 100) + "%");
+            System.out.println("Percentage of tweets neutral = " + ((sentimentCounterNeutral/totalDocuments) * 100) + "%");
         } catch (IOException e) {
             System.out.println(e);
         }
     }
-}
+}*/
