@@ -3,9 +3,14 @@ package Functionality;
 import com.mongodb.*;
 import twitter4j.*;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by matthewplummer on 14/03/2017.
@@ -15,21 +20,20 @@ public class AllFunctionality {
     public static Date tweetDate;
     public static int currentNumberTweetsRetrieved;
 
-
     public static void main(String[] args) {
-        try {
-            // To directly connect to a single MongoDB server (note that this will not auto-discover the primary even
-            // if it's a member of a replica set:
-            MongoClient mongoClient = new MongoClient("localhost", 27017);
-            DB db = mongoClient.getDB("TwitterAnalysis");
-            DBCollection twitterColl = db.getCollection("twitter_data");
-            DBCollection sentimentColl = db.getCollection("sentiment");
-            tweetStream(twitterColl, sentimentColl);
-        }
-        catch(IOException mongoDbConnectionError)
-        {
-            System.out.println("Error trying to connect to Mongo Db database, error is as follows: " + mongoDbConnectionError);
-        }
+        MongoClientURI uri = new MongoClientURI(
+                "mongodb://mplummer:Sandbank'25@cluster0-shard-00-00-0bpyo.mongodb.net:27017,cluster0-shard-00-01-0bpyo.mongodb.net:27017,cluster0-shard-00-02-0bpyo.mongodb.net:27017/TwitterAnalysis?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+
+        MongoClient mongoClient = new MongoClient(uri);
+        //MongoDatabase database = mongoClient.getDatabase("TwitterAnalysis");
+
+        // To directly connect to a single MongoDB server (note that this will not auto-discover the primary even
+        // if it's a member of a replica set:
+        //MongoClient mongoClient = new MongoClient("localhost", 27017);
+        DB db = mongoClient.getDB("TwitterAnalysis");
+        DBCollection twitterColl = db.getCollection("twitter_data");
+        DBCollection sentimentColl = db.getCollection("sentiment");
+        tweetStream(twitterColl, sentimentColl);
     }
 
     public static void tweetStream(final DBCollection twitterColl, final DBCollection sentimentColl) {
@@ -171,7 +175,6 @@ public class AllFunctionality {
                 matchFound = twitterText.contains(sentimentWord);
 
                 if (matchFound == true) {
-
                     wordPolarity = sentimentPolarityDocumentList.get(sentimentAndPolarityIndex);
 
                         /*
