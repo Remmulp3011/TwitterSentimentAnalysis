@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d40dbd99-9979-497c-ad2f-09b5254698ce" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_bson_3_4_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_3_4_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_core_3_4_2.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongo_java_driver_2_13_3.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PRCOSentimentAnalysis.iml" afterPath="$PROJECT_DIR$/PRCOSentimentAnalysis.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Functionality/AllFunctionality.java" afterPath="$PROJECT_DIR$/src/main/java/Functionality/AllFunctionality.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MongoDB/PopulateTwitterData.java" afterPath="$PROJECT_DIR$/src/main/java/MongoDB/PopulateTwitterData.java" />
     </list>
     <ignored path="PRCOSentimentAnalysis.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -82,9 +75,11 @@
       <file leaf-file-name="AllFunctionality.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Functionality/AllFunctionality.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="187">
+              <caret line="207" column="25" lean-forward="true" selection-start-line="207" selection-start-column="25" selection-end-line="207" selection-end-column="25" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -125,6 +120,14 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>twitterColl</find>
+      <find>sentiment</find>
+      <find>sentimentColl</find>
+      <find>saintPatricksDayColl</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -934,7 +937,7 @@
       <workItem from="1488378822109" duration="184000" />
       <workItem from="1488379027800" duration="264000" />
       <workItem from="1488379373346" duration="35200000" />
-      <workItem from="1489418480548" duration="19869000" />
+      <workItem from="1489418480548" duration="28495000" />
     </task>
     <task id="LOCAL-00001" summary="Added in filter for the stream to only get the specified text and in english. Made it so only the date of posting and text is printed.">
       <created>1487181384446</created>
@@ -1034,11 +1037,18 @@
       <option name="project" value="LOCAL" />
       <updated>1489524492577</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Switched code to use Atlas instead of local storage.&#10;Upgraded to Java 8 from Java 7.&#10;Upgraded mongo db java driver to the latest version.&#10;Added in polarity for the twitter_data table.&#10;Paramerterised the number of tweets and hashtags to search which are inputted via the console.">
+      <created>1489663769116</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1489663769116</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79272000" />
+    <option name="totallyTimeSpent" value="87898000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -1062,7 +1072,7 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42465752" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28630137" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21506849" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17043619" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1132,7 +1142,8 @@
     <MESSAGE value="Changed match sentiment by adding some comments and clears rather than creating new objects.&#10;Stream was changed by adding in a clause to try and prevent the error being thrown when end of file is reached." />
     <MESSAGE value="Fixed issue with regards to collection not being updated. Cause and solution is commented in code&#10;Added counters for positive negative and neutral tweets&#10;Added comments and removed print lines." />
     <MESSAGE value="Made new class with all functionality present and variables that are inputs for search phrases and number of tweets to get.&#10;Commented out match sentiment class due to the copied/ duplicated code." />
-    <option name="LAST_COMMIT_MESSAGE" value="Made new class with all functionality present and variables that are inputs for search phrases and number of tweets to get.&#10;Commented out match sentiment class due to the copied/ duplicated code." />
+    <MESSAGE value="Switched code to use Atlas instead of local storage.&#10;Upgraded to Java 8 from Java 7.&#10;Upgraded mongo db java driver to the latest version.&#10;Added in polarity for the twitter_data table.&#10;Paramerterised the number of tweets and hashtags to search which are inputted via the console." />
+    <option name="LAST_COMMIT_MESSAGE" value="Switched code to use Atlas instead of local storage.&#10;Upgraded to Java 8 from Java 7.&#10;Upgraded mongo db java driver to the latest version.&#10;Added in polarity for the twitter_data table.&#10;Paramerterised the number of tweets and hashtags to search which are inputted via the console." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1319,6 +1330,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="15" lean-forward="false" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1446,9 +1458,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Functionality/AllFunctionality.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="187">
+          <caret line="207" column="25" lean-forward="true" selection-start-line="207" selection-start-column="25" selection-end-line="207" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

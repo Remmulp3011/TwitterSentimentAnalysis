@@ -7,10 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by matthewplummer on 14/03/2017.
@@ -33,6 +30,7 @@ public class AllFunctionality {
         DB db = mongoClient.getDB("TwitterAnalysis");
         DBCollection twitterColl = db.getCollection("twitter_data");
         DBCollection sentimentColl = db.getCollection("sentiment");
+
         tweetStream(twitterColl, sentimentColl);
     }
 
@@ -72,7 +70,7 @@ public class AllFunctionality {
                                 .add("overallSentiment", "")
                                 .add("tweetPolarity", "");
 
-                        twitterColl.insert(documentBuilderDetail.get());
+                            twitterColl.insert(documentBuilderDetail.get());
                             currentNumberTweetsRetrieved+=1;
                             System.out.println("Number of Tweets retrieved: " + currentNumberTweetsRetrieved + "/" + numberTweetsToRetrieve);
                         }
@@ -130,6 +128,7 @@ public class AllFunctionality {
         int totalDocuments = 0;
         int sentimentCounterNeutral = 0;
         String tweetPolarity;
+        int numberOfTweetsAnalysed = 0;
         //To be used to filter down to specific fields
         BasicDBObject allQuery = new BasicDBObject();
         BasicDBObject searchField = new BasicDBObject();
@@ -169,13 +168,20 @@ public class AllFunctionality {
             overallSentimentValue = 0;//reset the sentiment value
             tweetId = twitterDocumentList.get(0);
             twitterText = twitterDocumentList.get(1);
+            tweetPolarity = twitterDocumentList.get(5);
 
-            for (int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++) {
-                sentimentWord = sentimentWordDocumentList.get(sentimentAndPolarityIndex);
-                matchFound = twitterText.contains(sentimentWord);
+            if(!tweetPolarity.equals("Positive") || !tweetPolarity.equals("Negative") || !tweetPolarity.equals("Neutral")) {
+                for (int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++) {
+                    sentimentWord = sentimentWordDocumentList.get(sentimentAndPolarityIndex);
 
-                if (matchFound == true) {
-                    wordPolarity = sentimentPolarityDocumentList.get(sentimentAndPolarityIndex);
+                    Set<String> words = new HashSet<>(
+                            Arrays.asList(twitterText.split(" "))
+                    );
+
+                    matchFound = words.contains(sentimentWord);
+
+                    if (matchFound == true) {
+                        wordPolarity = sentimentPolarityDocumentList.get(sentimentAndPolarityIndex);
 
                         /*
                         Wont work due to the face that with each iteration when using $set it will be replaced.
@@ -195,34 +201,29 @@ public class AllFunctionality {
                         //Find the id and change the value to stated
                         twitterColl.insert(searchQuery,newTwitterDataDocument);*/
 
-                    if (wordPolarity.equals("positive")) {
-                        overallSentimentValue += 1;
-                    } else {
-                        overallSentimentValue -= 1;
+                        if (wordPolarity.equals("positive")) {
+                            overallSentimentValue += 1;
+                        } else {
+                            overallSentimentValue -= 1;
+                        }
                     }
                 }
-            }
-            if(overallSentimentValue > 0)
-            {
-                tweetPolarity = "Positive";
-                sentimentCounterPositive += 1;
-            }
-            else if (overallSentimentValue < 0)
-            {
-                tweetPolarity = "Negative";
-                sentimentCounterNegative += 1;
-            }
-            else
-            {
-                tweetPolarity = "Neutral";
-                sentimentCounterNeutral += 1;
-            }
+                if (overallSentimentValue > 0) {
+                    tweetPolarity = "Positive";
+                    sentimentCounterPositive += 1;
+                } else if (overallSentimentValue < 0) {
+                    tweetPolarity = "Negative";
+                    sentimentCounterNegative += 1;
+                } else {
+                    tweetPolarity = "Neutral";
+                    sentimentCounterNeutral += 1;
+                }
 
-            BasicDBObject newTwitterDataDocument = new BasicDBObject();
+                BasicDBObject newTwitterDataDocument = new BasicDBObject();
 
-            //Key to change and value to change to. Use $set to only change specified key value
-            newTwitterDataDocument.append("$set", new BasicDBObject().append("overallSentiment", overallSentimentValue));
-            //Construct the string that needs to be searched in order to find the correct id
+                //Key to change and value to change to. Use $set to only change specified key value
+                newTwitterDataDocument.append("$set", new BasicDBObject().append("overallSentiment", overallSentimentValue));
+                //Construct the string that needs to be searched in order to find the correct id
                 /*
                 Having to do twitter text due to the face that quotations are added to the parameter.
                 e.g.for searching for ID you need: ObjectID("+tweetId+")
@@ -232,22 +233,29 @@ public class AllFunctionality {
                 For now the twitterText field will be used as it is unique for each tweet.
                 In the rare occasion someone will copy and paste a Tweet both will be the same and both will be updated each time they are met.
                 */
-            //Find the tweet that needs to be changed
-            BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
-            //Find the id and change the value to that stated
-            twitterColl.update(searchQuery, newTwitterDataDocument);
+                //Find the tweet that needs to be changed
+                BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
+                //Find the id and change the value to that stated
+                twitterColl.update(searchQuery, newTwitterDataDocument);
 
-            newTwitterDataDocument.clear();
-            searchQuery.clear();
+                newTwitterDataDocument.clear();
+                searchQuery.clear();
 
-            newTwitterDataDocument.append("$set", new BasicDBObject().append("tweetPolarity", tweetPolarity));
+                newTwitterDataDocument.append("$set", new BasicDBObject().append("tweetPolarity", tweetPolarity));
 
-            searchQuery = new BasicDBObject().append("tweetText", twitterText);
+                searchQuery = new BasicDBObject().append("tweetText", twitterText);
 
-            twitterColl.update(searchQuery, newTwitterDataDocument);
+                twitterColl.update(searchQuery, newTwitterDataDocument);
 
-            twitterDocumentList.clear();//clear the array list for the Twitter data for next iteration
+                twitterDocumentList.clear();//clear the array list for the Twitter data for next iteration
+                numberOfTweetsAnalysed += 1;
+            }
+            else
+            {
+                continue;
+            }
         }
+        System.out.println("Number of Tweets analysed for sentiment (number inputted): " + numberOfTweetsAnalysed);
         System.out.println("Total number of tweets = " + totalDocuments);
         System.out.println("Number of tweets positive = " + sentimentCounterPositive);
         System.out.println("Number of tweets negative = " + sentimentCounterNegative);
