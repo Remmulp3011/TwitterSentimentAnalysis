@@ -1,5 +1,6 @@
 package Functionality;
 
+import MongoDB.PopulateTwitterData;
 import com.mongodb.*;
 import twitter4j.*;
 
