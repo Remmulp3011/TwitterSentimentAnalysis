@@ -19,7 +19,7 @@ public class DatabaseConnection {
         List<String> sentimentPolarityDocumentList;
 
         MongoClientURI uri = new MongoClientURI(
-                "mongodb://mplummer:Sandbank'25@cluster0-shard-00-00-0bpyo.mongodb.net:27017,cluster0-shard-00-01-0bpyo.mongodb.net:27017,cluster0-shard-00-02-0bpyo.mongodb.net:27017/TwitterAnalysis?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+                "mongodb://mplummer:matthew17@cluster0-shard-00-00-0bpyo.mongodb.net:27017,cluster0-shard-00-01-0bpyo.mongodb.net:27017,cluster0-shard-00-02-0bpyo.mongodb.net:27017/TwitterAnalysis?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
 
         MongoClient mongoClient = new MongoClient(uri);
         DB db = mongoClient.getDB("TwitterAnalysis");

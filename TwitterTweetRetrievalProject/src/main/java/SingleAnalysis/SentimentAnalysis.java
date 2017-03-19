@@ -14,12 +14,16 @@ public class SentimentAnalysis {
         String sentimentWord;
         List<Object> overallSentimentAndWordsFound = new ArrayList<>();
         int numberOfMatches = 0;
+        String tweetTextCheck;
 
         for (int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++) {
                     sentimentWord = sentimentWordDocumentList.get(sentimentAndPolarityIndex);
 
+                    //Convert all to lower case as the word comparision is case sensitive.
+                    tweetTextCheck = tweetText.toLowerCase();
+
                     Set<String> words = new HashSet<>(
-                            Arrays.asList(tweetText.split(" "))
+                            Arrays.asList(tweetTextCheck.split(" "))
                     );
 
                     matchFound = words.contains(sentimentWord);
