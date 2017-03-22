@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DatabaseConnection {
 
-    public static void main(String[] args) {
+    public static void connection(String collectionToInsert, int numberOfTweets, String wordToSearch) {
         Object lock1 = new Object();
         Object lock2 = new Object();
         List<String> sentimentWordDocumentList;
@@ -23,7 +23,7 @@ public class DatabaseConnection {
 
         MongoClient mongoClient = new MongoClient(uri);
         DB db = mongoClient.getDB("TwitterAnalysis");
-        DBCollection twitterColl = db.getCollection("twitter_data");
+        DBCollection twitterColl = db.getCollection(collectionToInsert);
         DBCollection sentimentColl = db.getCollection("sentiment");
 
         synchronized (lock1) {
@@ -33,6 +33,6 @@ public class DatabaseConnection {
         {
             sentimentPolarityDocumentList = GetSentimentPolarity.getPolarity(sentimentColl);
         }
-        TweetRetrieval.tweetStream(twitterColl,sentimentWordDocumentList,sentimentPolarityDocumentList);
+        TweetRetrieval.tweetStream(twitterColl,sentimentWordDocumentList,sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
     }
 }
