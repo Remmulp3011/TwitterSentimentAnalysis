@@ -20,8 +20,9 @@ public class TweetRetrieval {
     static String tweetPolarity;
     static List<Object> overallSentimentAndWordsFound = new ArrayList<>();
     static String sentimentWordsFound;
+    static int numberOfMatches;
 
-    public static void tweetStream(final DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, int numberOfTweets, String wordsToSearch) {
+    public static void tweetStream(final DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, final int numberOfTweets, String wordsToSearch) {
         final int[] currentNumberTweetsRetrieved = {0};
         final int numberTweetsToRetrieve = numberOfTweets;
         String searchWords[] = {wordsToSearch};
@@ -45,16 +46,24 @@ public class TweetRetrieval {
                         }
 
 
-                        overallSentimentValue = (int) overallSentimentAndWordsFound.get(1);
                         sentimentWordsFound = (String) overallSentimentAndWordsFound.get(0);
+                        overallSentimentValue = (int) overallSentimentAndWordsFound.get(1);
+                        numberOfMatches = (int) overallSentimentAndWordsFound.get(2);
 
-                        if (overallSentimentValue > 0) {
+                        if (overallSentimentValue > 0 && numberOfMatches > 0) {
                             tweetPolarity = "Positive";
-                        } else if (overallSentimentValue < 0) {
+                        } else if (overallSentimentValue < 0 && numberOfMatches > 0) {
                             tweetPolarity = "Negative";
-                        } else {
+                        }
+                        //If there are matches but over all is 0 i.e. 1 positive = +1 and 1 negative = -1 overall 0 but not neutral. =balanced
+                        else if(numberOfMatches > 0 && overallSentimentValue == 0)
+                        {
+                            tweetPolarity = "Balanced";
+                        }else if(numberOfMatches == 0)
+                        {
                             tweetPolarity = "Neutral";
                         }
+
 
                         BasicDBObjectBuilder documentBuilderDetail = BasicDBObjectBuilder.start()
                                 .add("tweetDate", formattedTweetDate)

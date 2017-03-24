@@ -13,14 +13,14 @@ import java.util.*;
 /**
  * Created by matthewplummer on 14/03/2017.
  */
-public class AllFunctionality {
+public class AnalyseEntireCollection {
     public static String tweetText, formattedTweetDate;
     public static Date tweetDate;
     public static int currentNumberTweetsRetrieved;
 
     public static void main(String[] args) {
         MongoClientURI uri = new MongoClientURI(
-                "mongodb://mplummer:Sandbank'25@cluster0-shard-00-00-0bpyo.mongodb.net:27017,cluster0-shard-00-01-0bpyo.mongodb.net:27017,cluster0-shard-00-02-0bpyo.mongodb.net:27017/TwitterAnalysis?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+                "mongodb://mplummer:matthew17@cluster0-shard-00-00-0bpyo.mongodb.net:27017,cluster0-shard-00-01-0bpyo.mongodb.net:27017,cluster0-shard-00-02-0bpyo.mongodb.net:27017/TwitterAnalysis?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
 
         MongoClient mongoClient = new MongoClient(uri);
         //MongoDatabase database = mongoClient.getDatabase("TwitterAnalysis");
@@ -126,6 +126,7 @@ public class AllFunctionality {
         String sentimentWord;
         int sentimentCounterPositive = 0;
         int sentimentCounterNegative = 0;
+        int sentimentCounterBalanced = 0;
         int totalDocuments = 0;
         int sentimentCounterNeutral = 0;
         String tweetPolarity;
@@ -133,6 +134,7 @@ public class AllFunctionality {
         //To be used to filter down to specific fields
         BasicDBObject allQuery = new BasicDBObject();
         BasicDBObject searchField = new BasicDBObject();
+        int numberOfMatchesFound = 0;
 
         //Filter for field
         searchField.clear();//ensure it is empty
@@ -207,15 +209,23 @@ public class AllFunctionality {
                         } else {
                             overallSentimentValue -= 1;
                         }
+                        numberOfMatchesFound ++;
                     }
                 }
-                if (overallSentimentValue > 0) {
+                if (overallSentimentValue > 0 && numberOfMatchesFound > 0)
+                {
                     tweetPolarity = "Positive";
                     sentimentCounterPositive += 1;
-                } else if (overallSentimentValue < 0) {
+                } else if (overallSentimentValue < 0 && numberOfMatchesFound > 0)
+                {
                     tweetPolarity = "Negative";
                     sentimentCounterNegative += 1;
-                } else {
+                } else if (numberOfMatchesFound == 0) {
+                    tweetPolarity = "Balanced";
+                    sentimentCounterBalanced += 1;
+                }
+                else if (numberOfMatchesFound > 0 && overallSentimentValue == 0)
+                {
                     tweetPolarity = "Neutral";
                     sentimentCounterNeutral += 1;
                 }
@@ -261,5 +271,6 @@ public class AllFunctionality {
         System.out.println("Number of tweets positive = " + sentimentCounterPositive);
         System.out.println("Number of tweets negative = " + sentimentCounterNegative);
         System.out.println("Number of tweets neutral = " + sentimentCounterNeutral);
+        System.out.println("Number of tweets neutral = " + sentimentCounterBalanced);
     }
 }

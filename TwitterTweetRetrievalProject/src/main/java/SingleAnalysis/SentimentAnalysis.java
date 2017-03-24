@@ -46,13 +46,14 @@ public class SentimentAnalysis {
                         }
                     }
                 }
-
                 //This is to avoid the out of range exception where there are no matches found so nothing in index 0
                 if(numberOfMatches == 0)
                 {
-                    overallSentimentAndWordsFound.add(0,"No sentiment present.");
+                    overallSentimentAndWordsFound.add(0, "No sentiment present.");
                 }
                 overallSentimentAndWordsFound.add(1,overallSentimentValue);
+                overallSentimentAndWordsFound.add(2,numberOfMatches);
+
                 return overallSentimentAndWordsFound;
     }
 }
