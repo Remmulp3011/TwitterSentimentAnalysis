@@ -1,12 +1,13 @@
 package Functionality;
 
-import MongoDB.PopulateTwitterData;
 import com.mongodb.*;
 import twitter4j.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -14,7 +15,7 @@ import java.util.*;
  * Created by matthewplummer on 14/03/2017.
  */
 public class AnalyseEntireCollection {
-    public static String tweetText, formattedTweetDate;
+    public static String tweetText, formattedTweetDate, simplifiedDate;
     public static Date tweetDate;
     public static int currentNumberTweetsRetrieved;
 
@@ -63,8 +64,10 @@ public class AnalyseEntireCollection {
                         tweetDate = status.getCreatedAt();
                         tweetText = status.getText();
                         formattedTweetDate = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(tweetDate);//format the date from 'day  MMM DD hh:mm:ss GMT yyyy'
+                        simplifiedDate = new SimpleDateFormat("dd-MM-yyyy").format(tweetDate);
 
                         BasicDBObjectBuilder documentBuilderDetail = BasicDBObjectBuilder.start()
+                                .add("simplifiedDate",simplifiedDate)
                                 .add("tweetDate", formattedTweetDate)
                                 .add("tweetText", tweetText)
                                 .add("sentimentFound", "")
@@ -78,7 +81,11 @@ public class AnalyseEntireCollection {
                     }
                     if(currentNumberTweetsRetrieved == numberTweetsToRetrieve)
                     {
-                        matchSentiment(twitterColl,sentimentColl);
+                        try {
+                            matchSentiment(twitterColl,sentimentColl);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         twitterStream.shutdown();
                     }
             }
@@ -113,8 +120,7 @@ public class AnalyseEntireCollection {
         twitterStream.filter(tweetFilterQuery);
     }
 
-    public static void matchSentiment(DBCollection twitterColl, DBCollection sentimentColl)
-    {
+    public static void matchSentiment(DBCollection twitterColl, DBCollection sentimentColl) throws ParseException {
         List<String> twitterDocumentList = new ArrayList<>();
         List<String> sentimentWordDocumentList = new ArrayList<>();
         List<String> sentimentPolarityDocumentList = new ArrayList<>();
@@ -130,6 +136,7 @@ public class AnalyseEntireCollection {
         int totalDocuments = 0;
         int sentimentCounterNeutral = 0;
         String tweetPolarity;
+        String dateOfTweet;
         int numberOfTweetsAnalysed = 0;
         //To be used to filter down to specific fields
         BasicDBObject allQuery = new BasicDBObject();
@@ -167,14 +174,18 @@ public class AnalyseEntireCollection {
             twitterDocumentList.add(currentDocument.getString("sentimentFound"));
             twitterDocumentList.add(currentDocument.getString("overallSentiment"));
             twitterDocumentList.add(currentDocument.getString("tweetPolarity"));
+            twitterDocumentList.add(currentDocument.getString("simplifiedDate"));
+
 
             overallSentimentValue = 0;//reset the sentiment value
             tweetId = twitterDocumentList.get(0);
             twitterText = twitterDocumentList.get(1);
             tweetPolarity = twitterDocumentList.get(5);
+            dateOfTweet = twitterDocumentList.get(2);
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            Date formattedDateOfTweet = formatter.parse(dateOfTweet);
 
-            if(!tweetPolarity.equals("Positive") || !tweetPolarity.equals("Negative") || !tweetPolarity.equals("Neutral")) {
-                for (int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++) {
+            for (int sentimentAndPolarityIndex = 0; sentimentAndPolarityIndex < sentimentWordDocumentList.size(); sentimentAndPolarityIndex++) {
                     sentimentWord = sentimentWordDocumentList.get(sentimentAndPolarityIndex);
 
                     Set<String> words = new HashSet<>(
@@ -233,7 +244,7 @@ public class AnalyseEntireCollection {
                 BasicDBObject newTwitterDataDocument = new BasicDBObject();
 
                 //Key to change and value to change to. Use $set to only change specified key value
-                newTwitterDataDocument.append("$set", new BasicDBObject().append("overallSentiment", overallSentimentValue));
+                //newTwitterDataDocument.append("$set", new BasicDBObject().append("overallSentiment", overallSentimentValue));
                 //Construct the string that needs to be searched in order to find the correct id
                 /*
                 Having to do twitter text due to the face that quotations are added to the parameter.
@@ -245,27 +256,32 @@ public class AnalyseEntireCollection {
                 In the rare occasion someone will copy and paste a Tweet both will be the same and both will be updated each time they are met.
                 */
                 //Find the tweet that needs to be changed
-                BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
+                //BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
                 //Find the id and change the value to that stated
-                twitterColl.update(searchQuery, newTwitterDataDocument);
+                //twitterColl.update(searchQuery, newTwitterDataDocument);
 
-                newTwitterDataDocument.clear();
-                searchQuery.clear();
+                //newTwitterDataDocument.clear();
+                //searchQuery.clear();
 
-                newTwitterDataDocument.append("$set", new BasicDBObject().append("tweetPolarity", tweetPolarity));
+                //newTwitterDataDocument.append("$set", new BasicDBObject().append("tweetPolarity", tweetPolarity));
 
-                searchQuery = new BasicDBObject().append("tweetText", twitterText);
+                //searchQuery = new BasicDBObject().append("tweetText", twitterText);
+
+                //twitterColl.update(searchQuery, newTwitterDataDocument);
+
+                //twitterDocumentList.clear();//clear the array list for the Twitter data for next iteration
+                numberOfTweetsAnalysed += 1;
+
+                //searchQuery.clear();
+
+                newTwitterDataDocument.append("$set", new BasicDBObject().append("simplifiedDate", formattedDateOfTweet));
+
+                BasicDBObject searchQuery = new BasicDBObject().append("tweetText", twitterText);
 
                 twitterColl.update(searchQuery, newTwitterDataDocument);
 
                 twitterDocumentList.clear();//clear the array list for the Twitter data for next iteration
-                numberOfTweetsAnalysed += 1;
             }
-            else
-            {
-                continue;
-            }
-        }
         System.out.println("Number of Tweets analysed for sentiment (number inputted): " + numberOfTweetsAnalysed);
         System.out.println("Total number of tweets = " + totalDocuments);
         System.out.println("Number of tweets positive = " + sentimentCounterPositive);

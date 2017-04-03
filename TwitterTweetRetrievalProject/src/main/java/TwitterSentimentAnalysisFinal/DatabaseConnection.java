@@ -1,4 +1,4 @@
-package SingleAnalysis;
+package TwitterSentimentAnalysisFinal;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -33,6 +33,6 @@ public class DatabaseConnection {
         {
             sentimentPolarityDocumentList = GetSentimentPolarity.getPolarity(sentimentColl);
         }
-        TweetRetrieval.tweetStream(twitterColl,sentimentWordDocumentList,sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
+        TwitterStream.tweetStream(twitterColl,sentimentWordDocumentList,sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
     }
 }

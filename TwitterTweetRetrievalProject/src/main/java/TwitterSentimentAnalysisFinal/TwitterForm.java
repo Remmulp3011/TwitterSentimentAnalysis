@@ -1,4 +1,4 @@
-package SingleAnalysis;
+package TwitterSentimentAnalysisFinal;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +19,7 @@ public class TwitterForm {
     private JLabel informationLabel;
     private JTextField numberOfTweets;
     private JLabel informationLabel2;
-    public int numberOfTweetsUsable;
+    public static int numberOfTweetsUsable;
     public String wordsToSearchUsable;
     public String collectionToInsertIntoUsable;
 

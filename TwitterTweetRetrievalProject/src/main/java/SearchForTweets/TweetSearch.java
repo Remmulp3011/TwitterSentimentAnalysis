@@ -19,6 +19,7 @@ public class TweetSearch {
             Twitter twitter = TwitterFactory.getSingleton();
             Query query = new Query("#TRUMP AND lang:en AND exclude:retweets");
             QueryResult result = twitter.search(query);
+            query.setCount(100);
             for (Status status : result.getTweets()) {
                 out.println(status.getCreatedAt() + "," + status.getText());
                 System.out.println(status.getCreatedAt() + "," + status.getText() + "\n");

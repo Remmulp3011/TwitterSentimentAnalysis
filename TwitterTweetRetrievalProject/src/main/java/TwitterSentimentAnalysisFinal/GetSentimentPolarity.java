@@ -1,4 +1,4 @@
-package SingleAnalysis;
+package TwitterSentimentAnalysisFinal;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;

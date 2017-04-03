@@ -1,4 +1,4 @@
-package SingleAnalysis;
+package TwitterSentimentAnalysisFinal;
 
 import java.util.*;
 
