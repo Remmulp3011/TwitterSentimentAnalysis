@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DatabaseConnection {
 
-    public static void connection(String collectionToInsert, int numberOfTweets, String wordToSearch) {
+    public static void connection(String collectionToInsert, int numberOfTweets, String wordToSearch, boolean searchToBeDone) {
         Object lock1 = new Object();
         Object lock2 = new Object();
         List<String> sentimentWordDocumentList;
@@ -33,6 +33,13 @@ public class DatabaseConnection {
         {
             sentimentPolarityDocumentList = GetSentimentPolarity.getPolarity(sentimentColl);
         }
-        TwitterStream.tweetStream(twitterColl,sentimentWordDocumentList,sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
+
+        if (searchToBeDone == true)
+        {
+            TwitterSearch.searchTwitter(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, wordToSearch);
+        }
+        else {
+            TwitterStream.tweetStream(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
+        }
     }
 }

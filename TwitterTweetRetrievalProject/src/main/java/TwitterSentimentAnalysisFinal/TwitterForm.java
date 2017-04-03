@@ -3,6 +3,8 @@ package TwitterSentimentAnalysisFinal;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * Created by matthewplummer on 22/03/2017.
@@ -19,9 +21,13 @@ public class TwitterForm {
     private JLabel informationLabel;
     private JTextField numberOfTweets;
     private JLabel informationLabel2;
+    private JCheckBox searchTickBox;
     public static int numberOfTweetsUsable;
     public String wordsToSearchUsable;
     public String collectionToInsertIntoUsable;
+    public boolean searchCompleted = false;
+    public boolean searchToBeDone = false;
+    static Object lock7 = new Object();
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("TwitterForm");
@@ -38,12 +44,24 @@ public class TwitterForm {
             public void actionPerformed(ActionEvent e) {
                 if(!wordsToSearch.getText().equals("") && !collectionToInsert.getText().equals("")) {
                     wordsToSearchUsable = wordsToSearch.getText();
-                    numberOfTweetsUsable = Integer.parseInt(numberOfTweets.getText());
                     collectionToInsertIntoUsable = collectionToInsert.getText();
+                    numberOfTweetsUsable = Integer.parseInt(numberOfTweets.getText());
+
+
+                    if (searchTickBox.isSelected()) {
+                        informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
+                        informationLabel2.setText("Check analytics tool for results.");
+                        searchToBeDone = true;
+                        synchronized (lock7) {
+                            DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone);
+                        }
+                        searchToBeDone = false;
+                    }
+
                     errorLabel.setText(" ");
-                    informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " Tweets, searching for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
+                    informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " live Tweets, searching for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
                     informationLabel2.setText("Check analytics tool for results.");
-                    DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable);
+                    DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone);
                 }
                 else
                 {
