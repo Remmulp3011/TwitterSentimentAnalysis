@@ -3,7 +3,6 @@ package TwitterSentimentAnalysisFinal;
 import com.mongodb.DBCollection;
 import twitter4j.*;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,8 +23,8 @@ public class TwitterSearch {
     public static boolean searchTwitter(DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, String wordsToSearch) {
         Twitter twitter = new TwitterFactory().getInstance();
         Query query = new Query(wordsToSearch);
-        //query.setSince("2017-04-01");
-        //query.setUntil("2017-04-03");
+        //query.setSince("2017-04-03");
+        query.setUntil("2017-04-04"); //--USE THIS FOR SPECIFIC DATE TO RETRIEVE
         query.setLang("en");
         QueryResult result;
         int Count=0;
@@ -40,6 +39,7 @@ public class TwitterSearch {
 
                     tweetText = tweet.getText();
                     tweetDate = tweet.getCreatedAt();
+
                     synchronized (lock5) {
                         overallSentimentAndWordsFound = SentimentAnalysis.matchSentiment(sentimentPolarityDocumentList, sentimentWordDocumentList, tweetText);
                     }
@@ -57,6 +57,8 @@ public class TwitterSearch {
                     e.printStackTrace();
                 }
             }
+            //This keeps the code iterating as long as there is another Tweet
+            //the request clause is needed to ensure that the request limit is not exceeded causing the code to be locked out.
             while ((query = result.nextQuery()) != null && requests < 41);
             System.out.println("NUMBER OF TWEETS = " + Count);
         } catch (TwitterException e) {

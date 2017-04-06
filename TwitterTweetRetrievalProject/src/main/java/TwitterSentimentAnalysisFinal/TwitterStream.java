@@ -1,13 +1,13 @@
 package TwitterSentimentAnalysisFinal;
 
-import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import twitter4j.*;
 
-import java.text.SimpleDateFormat;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by matthewplummer on 19/03/2017.
@@ -17,13 +17,15 @@ public class TwitterStream {
     public static Date tweetDate;
     static Object lock3 = new Object();
     static Object lock4 = new Object();
+    static Object lock8 = new Object();
     static boolean analysisAndInsertCompleted = false;
     static List<Object> overallSentimentAndWordsFound = new ArrayList<>();
     static boolean duplicate = false;
+    final static int[] currentNumberTweetsRetrieved = {0};
+
 
 
     public static void tweetStream(final DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, final int numberOfTweets, String wordsToSearch) {
-        final int[] currentNumberTweetsRetrieved = {0};
         final int numberTweetsToRetrieve = numberOfTweets;
         String searchWords[] = {wordsToSearch};
 
@@ -38,6 +40,7 @@ public class TwitterStream {
                         //Get information stated, this case is the date and text of tweet
                         tweetDate = status.getCreatedAt();
                         tweetText = status.getText();
+
                         /*DBCursor twitterDataCursor = twitterColl.find();
 
                         //Used to prevent duplicate tweets being inserted i.e. when they are spam marketing tweets.

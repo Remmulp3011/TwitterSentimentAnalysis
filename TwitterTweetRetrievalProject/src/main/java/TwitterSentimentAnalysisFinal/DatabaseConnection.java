@@ -5,7 +5,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by matthewplummer on 19/03/2017.
@@ -17,29 +22,67 @@ public class DatabaseConnection {
         Object lock2 = new Object();
         List<String> sentimentWordDocumentList;
         List<String> sentimentPolarityDocumentList;
+        Properties prop = new Properties();
+        InputStream input = null;
+        String username = null;
+        String password = null;
+        String clusterPrefix = null;
+        String port = null;
+        String databaseName = null;
+        String absolutePathOfResourceFile = new File("src/main/resources/mongoDbConnection.properties").getAbsolutePath();
 
-        MongoClientURI uri = new MongoClientURI(
-                "mongodb://mplummer:matthew17@cluster0-shard-00-00-0bpyo.mongodb.net:27017,cluster0-shard-00-01-0bpyo.mongodb.net:27017,cluster0-shard-00-02-0bpyo.mongodb.net:27017/TwitterAnalysis?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+        //Get information needed to connect to the MongoDB Atlas cluster
+        try {
+            input = new FileInputStream(absolutePathOfResourceFile);
+            // load a properties file
+            prop.load(input);
 
-        MongoClient mongoClient = new MongoClient(uri);
-        DB db = mongoClient.getDB("TwitterAnalysis");
-        DBCollection twitterColl = db.getCollection(collectionToInsert);
-        DBCollection sentimentColl = db.getCollection("sentiment");
-
-        synchronized (lock1) {
-            sentimentWordDocumentList = GetSentimentWords.getWords(sentimentColl);
+            password = prop.getProperty("mongodb.password");
+            username = prop.getProperty("mongodb.username");
+            clusterPrefix = prop.getProperty("mongodb.clusterPrefix");
+            port = prop.getProperty("mongodb.port");
+            databaseName = prop.getProperty("mongodb.database");
         }
-        synchronized (lock2)
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        finally
         {
-            sentimentPolarityDocumentList = GetSentimentPolarity.getPolarity(sentimentColl);
+            if (input != null) {
+                try {
+                    input.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        if (searchToBeDone == true)
-        {
-            TwitterSearch.searchTwitter(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, wordToSearch);
+        if(username != null && password != null && clusterPrefix != null) {
+            MongoClientURI uri = new MongoClientURI(
+                    "mongodb://" + username + ":" + password + "@" + clusterPrefix + "-00-0bpyo.mongodb.net:" + port + "," + clusterPrefix + "-01-0bpyo.mongodb.net:" + port + "," + clusterPrefix + "-02-0bpyo.mongodb.net:" + port + "/" + databaseName + "?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+
+            MongoClient mongoClient = new MongoClient(uri);
+            DB db = mongoClient.getDB(databaseName);
+            DBCollection twitterColl = db.getCollection(collectionToInsert);
+            DBCollection sentimentColl = db.getCollection("sentiment");
+
+            synchronized (lock1) {
+                sentimentWordDocumentList = GetSentimentWords.getWords(sentimentColl);
+            }
+            synchronized (lock2) {
+                sentimentPolarityDocumentList = GetSentimentPolarity.getPolarity(sentimentColl);
+            }
+
+            //Code here is only run if the tick box on the form is ticked indicate a search is to be carried out.
+            if (searchToBeDone == true) {
+                TwitterSearch.searchTwitter(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, wordToSearch);
+            } else {
+                TwitterStream.tweetStream(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
+            }
         }
-        else {
-            TwitterStream.tweetStream(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
+        else{
+            System.out.println("Password, username, cluster prefix, port or database name has not been entered.");
         }
     }
 }
