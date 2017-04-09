@@ -12,9 +12,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Timer;
 
 /**
  * Created by matthewplummer on 22/03/2017.
@@ -37,6 +37,8 @@ public class UserInterfaceProcess extends JFrame {
     private JTextPane InformationPane;
     private JFormattedTextField dateFormattedTextField;
     private JLabel datePickerLabel;
+    private JLabel timerLabel;
+    private JLabel numberOfRequestsLimit;
     public static int numberOfTweetsUsable;
     public String wordsToSearchUsable;
     public String collectionToInsertIntoUsable;
@@ -56,6 +58,8 @@ public class UserInterfaceProcess extends JFrame {
     Set<String> colls;
     String dateFormatSearchUsable = null;
     String datePattern = "\\d{4}-\\d{2}-\\d{2}";
+    boolean timerRunning = false;
+    static int counter = 900;
 
     public static void main(String[] args) {
         UserInterfaceProcess myForm = new UserInterfaceProcess();
@@ -78,12 +82,10 @@ public class UserInterfaceProcess extends JFrame {
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!wordsToSearch.getText().equals("") && !collectionsList.getSelectedItem().equals("")) {
+                if(!wordsToSearch.getText().equals("") && !collectionsList.getSelectedItem().equals("") && !numberOfTweets.getText().equals("")) {
                         wordsToSearchUsable = wordsToSearch.getText();
                         collectionToInsertIntoUsable = (String) collectionsList.getSelectedItem();
                         numberOfTweetsUsable = Integer.parseInt(numberOfTweets.getText());
-
-
 
                     boolean error = false;
                     if(searchTickBox.isSelected()) {
@@ -95,6 +97,11 @@ public class UserInterfaceProcess extends JFrame {
                                     informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
                                     informationLabel2.setText("Check analytics tool for results.");
                                     searchToBeDone = true;
+                                    if(timerRunning ==false)
+                                    {
+                                        counter = 900;
+                                        timer();
+                                    }
                                     synchronized (lock7) {
                                         DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
                                     }
@@ -114,9 +121,9 @@ public class UserInterfaceProcess extends JFrame {
 
                         if(error == false) {
                             errorLabel.setText(" ");
-                            informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " live Tweets, streaming for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
-                            informationLabel2.setText("Check analytics tool for results.");
-                            DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
+                                informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " live Tweets, streaming for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
+                                informationLabel2.setText("Check analytics tool for results.");
+                                DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
                         }
 
                 }
@@ -136,6 +143,11 @@ public class UserInterfaceProcess extends JFrame {
                         errorLabel.setText("");
                         dateFormatSearchUsable = dateFormattedTextField.getText();
                         if(dateFormatSearchUsable.matches(datePattern)) {
+                            if(timerRunning ==false)
+                            {
+                                counter = 900;
+                                timer();
+                            }
                             errorLabel.setText("");
                             wordsToSearchUsable = wordsToSearch.getText();
                             collectionToInsertIntoUsable = (String) collectionsList.getSelectedItem();
@@ -232,6 +244,36 @@ public class UserInterfaceProcess extends JFrame {
                 collectionsList.addItem(collectionName);
             }
         }
+    }
 
+    public void timer()
+    {
+        final int[] minutesRemainder = new int[1];
+        final int[] wholeMinutes = new int[1];
+        timerRunning = true;
+
+        final Timer timer = new Timer("MyTimer");//create a new Timer
+
+        final TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                counter--;//increments the counter
+                System.out.println(counter);
+                minutesRemainder[0] = counter % 60; //gets the seconds for the minute
+                wholeMinutes[0] = (int) Math.floor(counter/60); //rounds the minutes to the minute
+                timerLabel.setText("Timer for request limit:" + wholeMinutes[0] + ":" + minutesRemainder[0]);
+                numberOfRequestsLimit.setText("Number of requests: " + String.valueOf(TwitterSearch.requests) + "/170");
+                if(counter <= 0)
+                {
+                    numberOfRequestsLimit.setText("Number of requests: 0/170");
+                    timerRunning = false;
+                    TwitterSearch.requests = 0;
+                    timer.cancel();
+                    timer.purge();
+                }
+            }
+        };
+
+        timer.scheduleAtFixedRate(timerTask, 30, 1000);//this line starts the timer at the same time its executed
     }
 }

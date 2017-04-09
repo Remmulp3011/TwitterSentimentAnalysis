@@ -18,17 +18,23 @@ public class TwitterSearch {
     static boolean searchCompleted = false;
     static String tweetText;
     static Date tweetDate;
+    public static int requests = 0;
 
 
     public static boolean searchTwitter(DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, String wordsToSearch, String searchDate) {
         Twitter twitter = new TwitterFactory().getInstance();
         Query query = new Query(wordsToSearch);
-        //query.setSince("2017-04-03");
         query.setUntil(searchDate); //--USE THIS FOR SPECIFIC DATE TO RETRIEVE
         query.setLang("en");
         QueryResult result;
         int Count=0;
-        int requests = 0;
+
+        if(requests >= 170)
+        {
+            System.out.println("NUMBER OF TWEETS = " + Count);
+            return searchCompleted;//Stop searching as request limit has been met
+        }
+
         try {
             do {
                 result = twitter.search(query);
@@ -59,7 +65,8 @@ public class TwitterSearch {
             }
             //This keeps the code iterating as long as there is another Tweet
             //the request clause is needed to ensure that the request limit is not exceeded causing the code to be locked out.
-            while ((query = result.nextQuery()) != null && requests < 41);
+            while ((query = result.nextQuery()) != null && requests <= 170);
+
             System.out.println("NUMBER OF TWEETS = " + Count);
         } catch (TwitterException e) {
             e.printStackTrace();
