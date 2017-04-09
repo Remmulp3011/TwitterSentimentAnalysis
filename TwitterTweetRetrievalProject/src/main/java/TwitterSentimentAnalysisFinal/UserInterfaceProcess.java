@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,33 +40,34 @@ public class UserInterfaceProcess extends JFrame {
     private JLabel datePickerLabel;
     private JLabel timerLabel;
     private JLabel numberOfRequestsLimit;
-    public static int numberOfTweetsUsable;
-    public String wordsToSearchUsable;
-    public String collectionToInsertIntoUsable;
-    public boolean searchToBeDone = false;
-    static Object lock7 = new Object();
-    static Object lock9 = new Object();
-    Properties prop = new Properties();
-    InputStream input = null;
-    String username = null;
-    String password = null;
-    String clusterPrefix = null;
-    String port = null;
-    String databaseName = null;
-    String absolutePathOfResourceFile = new File("src/main/resources/mongoDbConnection.properties").getAbsolutePath();
-    String collectionName;
-    List<String> list;
-    Set<String> colls;
-    String dateFormatSearchUsable = null;
-    String datePattern = "\\d{4}-\\d{2}-\\d{2}";
-    boolean timerRunning = false;
-    static int counter = 900;
+    private JLabel imageLogo;
+    private static int numberOfTweetsUsable;
+    private String wordsToSearchUsable;
+    private String collectionToInsertIntoUsable;
+    private boolean searchToBeDone = false;
+    private static final Object lock7 = new Object();
+    private static final Object lock9 = new Object();
+    private Properties prop = new Properties();
+    private InputStream input = null;
+    private String username = null;
+    private String password = null;
+    private String clusterPrefix = null;
+    private String port = null;
+    private String databaseName = null;
+    private String absolutePathOfResourceFile = new File("src/main/resources/mongoDbConnection.properties").getAbsolutePath();
+    private String collectionName;
+    private List<String> list;
+    private Set<String> colls;
+    private String dateFormatSearchUsable = null;
+    private String datePattern = "\\d{4}-\\d{2}-\\d{2}";
+    private boolean timerRunning = false;
+    private static int counter = 900;
 
     public static void main(String[] args) {
         UserInterfaceProcess myForm = new UserInterfaceProcess();
     }
 
-    public UserInterfaceProcess() {
+    private UserInterfaceProcess() {
         super("Twitter sentiment analysis");
 
         synchronized (lock9) {
@@ -73,7 +75,7 @@ public class UserInterfaceProcess extends JFrame {
         }
         setContentPane(panel1);
         pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -97,7 +99,7 @@ public class UserInterfaceProcess extends JFrame {
                                     informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
                                     informationLabel2.setText("Check analytics tool for results.");
                                     searchToBeDone = true;
-                                    if(timerRunning ==false)
+                                    if(!timerRunning)
                                     {
                                         counter = 900;
                                         timer();
@@ -119,7 +121,7 @@ public class UserInterfaceProcess extends JFrame {
                             }
                         }
 
-                        if(error == false) {
+                        if(!error) {
                             errorLabel.setText(" ");
                                 informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " live Tweets, streaming for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
                                 informationLabel2.setText("Check analytics tool for results.");
@@ -143,7 +145,7 @@ public class UserInterfaceProcess extends JFrame {
                         errorLabel.setText("");
                         dateFormatSearchUsable = dateFormattedTextField.getText();
                         if(dateFormatSearchUsable.matches(datePattern)) {
-                            if(timerRunning ==false)
+                            if(!timerRunning)
                             {
                                 counter = 900;
                                 timer();
@@ -197,7 +199,7 @@ public class UserInterfaceProcess extends JFrame {
         });
     }
 
-    public void getCollections(){
+    private void getCollections(){
         //Get information needed to connect to the MongoDB Atlas cluster
         try {
             input = new FileInputStream(absolutePathOfResourceFile);
@@ -236,17 +238,16 @@ public class UserInterfaceProcess extends JFrame {
 
             collectionsList.removeAllItems();
 
-            for(int i = 0; i < list.size(); i++)
-            {
-                collectionName = list.get(i).replace(",","");
-                collectionName = list.get(i).replace("[","");
-                collectionName = list.get(i).replace("]","");
+            for (String aList : list) {
+                collectionName = aList.replace(",", "");
+                collectionName = aList.replace("[", "");
+                collectionName = aList.replace("]", "");
                 collectionsList.addItem(collectionName);
             }
         }
     }
 
-    public void timer()
+    private void timer()
     {
         final int[] minutesRemainder = new int[1];
         final int[] wholeMinutes = new int[1];
@@ -261,7 +262,22 @@ public class UserInterfaceProcess extends JFrame {
                 System.out.println(counter);
                 minutesRemainder[0] = counter % 60; //gets the seconds for the minute
                 wholeMinutes[0] = (int) Math.floor(counter/60); //rounds the minutes to the minute
-                timerLabel.setText("Timer for request limit:" + wholeMinutes[0] + ":" + minutesRemainder[0]);
+                if(wholeMinutes[0] < 10 && minutesRemainder[0] >= 10)
+                {
+                    timerLabel.setText("Timer for request limit:" + "0" + wholeMinutes[0] + ":" + minutesRemainder[0]);
+                }
+                else if(minutesRemainder[0] < 10 && wholeMinutes[0] >= 10)
+                {
+                    timerLabel.setText("Timer for request limit:" + wholeMinutes[0] + ":" + "0" + minutesRemainder[0]);
+                }
+                else if(minutesRemainder[0] < 10 && wholeMinutes[0] < 10)
+                {
+                    timerLabel.setText("Timer for request limit:" + "0" + wholeMinutes[0] + ":" + "0" + minutesRemainder[0]);
+                }
+                else
+                {
+                    timerLabel.setText("Timer for request limit:" + wholeMinutes[0] + ":" + minutesRemainder[0]);
+                }
                 numberOfRequestsLimit.setText("Number of requests: " + String.valueOf(TwitterSearch.requests) + "/170");
                 if(counter <= 0)
                 {
