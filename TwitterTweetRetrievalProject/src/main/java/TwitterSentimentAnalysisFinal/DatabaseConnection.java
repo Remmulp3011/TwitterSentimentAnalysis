@@ -17,7 +17,7 @@ import java.util.Properties;
  */
 public class DatabaseConnection {
 
-    public static void connection(String collectionToInsert, int numberOfTweets, String wordToSearch, boolean searchToBeDone) {
+    public static void connection(String collectionToInsert, int numberOfTweets, String wordToSearch, boolean searchToBeDone, String searchDate) {
         Object lock1 = new Object();
         Object lock2 = new Object();
         List<String> sentimentWordDocumentList;
@@ -76,7 +76,7 @@ public class DatabaseConnection {
 
             //Code here is only run if the tick box on the form is ticked indicate a search is to be carried out.
             if (searchToBeDone == true) {
-                TwitterSearch.searchTwitter(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, wordToSearch);
+                TwitterSearch.searchTwitter(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, wordToSearch, searchDate);
             } else {
                 TwitterStream.tweetStream(twitterColl, sentimentWordDocumentList, sentimentPolarityDocumentList, numberOfTweets, wordToSearch);
             }

@@ -11,10 +11,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by matthewplummer on 22/03/2017.
@@ -35,6 +35,8 @@ public class UserInterfaceProcess extends JFrame {
     private JComboBox collectionsList;
     private JButton refreshCollectionList;
     private JTextPane InformationPane;
+    private JFormattedTextField dateFormattedTextField;
+    private JLabel datePickerLabel;
     public static int numberOfTweetsUsable;
     public String wordsToSearchUsable;
     public String collectionToInsertIntoUsable;
@@ -52,29 +54,12 @@ public class UserInterfaceProcess extends JFrame {
     String collectionName;
     List<String> list;
     Set<String> colls;
+    String dateFormatSearchUsable = null;
+    String datePattern = "\\d{4}-\\d{2}-\\d{2}";
 
     public static void main(String[] args) {
         UserInterfaceProcess myForm = new UserInterfaceProcess();
     }
-
-    /*public void barProgress(int progress)
-    {
-        final float percentage = (progress*100/numberOfTweetsUsable);
-        String percentageWord = String.valueOf(percentage);
-        PercentageCompelete.setText(percentageWord);
-       *//* Runnable runner = new Runnable()
-        {
-            public void run() {
-                    //progressBar.setValue(percentage);
-                    progressBar.setString(percentage + "%");
-                    progressBar.repaint();
-                    System.out.println("PROGRESS BAR VALUE IS>>>>" + progressBar.getValue());
-                    System.out.println("PROGRESS BAR STRING IS>>>>" + progressBar.getString());
-            }
-        };
-        Thread t = new Thread(runner, "Code Executor");
-        t.start();*//*
-    }*/
 
     public UserInterfaceProcess() {
         super("Twitter sentiment analysis");
@@ -82,37 +67,58 @@ public class UserInterfaceProcess extends JFrame {
         synchronized (lock9) {
             getCollections();
         }
-
         setContentPane(panel1);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        dateFormattedTextField.setText(dateFormat.format(date));
+
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!wordsToSearch.getText().equals("") && !collectionsList.getSelectedItem().equals("") && !numberOfTweets.getText().equals("")) {
-
-                    wordsToSearchUsable = wordsToSearch.getText();
-                    collectionToInsertIntoUsable = (String) collectionsList.getSelectedItem();
-                    numberOfTweetsUsable = Integer.parseInt(numberOfTweets.getText());
-
-                    //If the tick box is ticked the code to run the search will be carried out.
-                            informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
-                        informationLabel2.setText("Check analytics tool for results.");
+                if(!wordsToSearch.getText().equals("") && !collectionsList.getSelectedItem().equals("")) {
+                        wordsToSearchUsable = wordsToSearch.getText();
+                        collectionToInsertIntoUsable = (String) collectionsList.getSelectedItem();
+                        numberOfTweetsUsable = Integer.parseInt(numberOfTweets.getText());
 
 
-                    if (searchTickBox.isSelected()) {
-                        searchToBeDone = true;
-                        synchronized (lock7) {
-                            DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone);
+
+                    boolean error = false;
+                    if(searchTickBox.isSelected()) {
+                            if (!numberOfTweets.getText().equals("")) {
+                                errorLabel.setText("");
+                                dateFormatSearchUsable = dateFormattedTextField.getText();
+                                if (dateFormatSearchUsable.matches(datePattern)) {
+                                    //If the tick box is ticked the code to run the search will be carried out.
+                                    informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
+                                    informationLabel2.setText("Check analytics tool for results.");
+                                    searchToBeDone = true;
+                                    synchronized (lock7) {
+                                        DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
+                                    }
+                                    searchToBeDone = false;
+                                }
+                                else
+                                {
+                                    errorLabel.setText("Enter a date in the format yyyy-mm-dd");
+                                    error = true;
+                                }
+                            }
+                            else {
+                                errorLabel.setText("Enter a date in the format yyyy-mm-dd");
+                                error = true;
+                            }
                         }
-                        searchToBeDone = false;
-                    }
 
-                    errorLabel.setText(" ");
-                    informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " live Tweets, streaming for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
-                    informationLabel2.setText("Check analytics tool for results.");
-                    DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone);
+                        if(error == false) {
+                            errorLabel.setText(" ");
+                            informationLabel.setText("Running analysis... retrieving " + numberOfTweetsUsable + " live Tweets, streaming for \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
+                            informationLabel2.setText("Check analytics tool for results.");
+                            DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
+                        }
+
                 }
                 else
                 {
@@ -126,15 +132,24 @@ public class UserInterfaceProcess extends JFrame {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                    if (!wordsToSearch.getText().equals("") && !collectionsList.getSelectedItem().equals("")) {
-                        wordsToSearchUsable = wordsToSearch.getText();
-                        collectionToInsertIntoUsable = (String) collectionsList.getSelectedItem();
-                        errorLabel.setText(" ");
-                        informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
-                        informationLabel2.setText("Check analytics tool for results.");
-                        searchToBeDone = true;
-                        DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone);
-                        searchToBeDone = false;
+                    if (!wordsToSearch.getText().equals("") && !collectionsList.getSelectedItem().equals("") && !dateFormattedTextField.getText().equals("")) {
+                        errorLabel.setText("");
+                        dateFormatSearchUsable = dateFormattedTextField.getText();
+                        if(dateFormatSearchUsable.matches(datePattern)) {
+                            errorLabel.setText("");
+                            wordsToSearchUsable = wordsToSearch.getText();
+                            collectionToInsertIntoUsable = (String) collectionsList.getSelectedItem();
+                            errorLabel.setText(" ");
+                            informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
+                            informationLabel2.setText("Check analytics tool for results.");
+                            searchToBeDone = true;
+                            DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
+                            searchToBeDone = false;
+                        }
+                        else
+                        {
+                            errorLabel.setText("Enter a date in the format yyyy-mm-dd");
+                        }
                     }
                     else
                     {
@@ -148,6 +163,24 @@ public class UserInterfaceProcess extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 getCollections();
+            }
+        });
+        searchTickBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(searchTickBox.isSelected()) {
+                    dateFormattedTextField.setEditable(true);
+                    dateFormattedTextField.setEnabled(true);
+                    searchButton.setEnabled(true);
+                    submit.setText("Execute Twitter search AND stream");
+                }
+                else
+                {
+                    dateFormattedTextField.setEditable(false);
+                    dateFormattedTextField.setEnabled(false);
+                    searchButton.setEnabled(false);
+                    submit.setText("Execute Twitter stream");
+                }
             }
         });
     }

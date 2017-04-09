@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="TwitterSentimentAnalysisFinal.UserInterfaceProcess">
-  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridLayoutManager" row-count="13" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridLayoutManager" row-count="15" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="1000" height="1000"/>
@@ -13,7 +13,7 @@
     <children>
       <component id="8587b" class="javax.swing.JTextField" binding="wordsToSearch">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -21,31 +21,34 @@
       </component>
       <component id="7166c" class="javax.swing.JLabel" binding="wordsToSearchText">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Enter words/ hash tags to search. For multiple words separate with a comma"/>
+          <labelFor value="8587b"/>
+          <text value="Enter word(s) to search/ stream for. Separate multiple words with a comma."/>
         </properties>
       </component>
       <component id="abc29" class="javax.swing.JLabel" binding="numberOfTweetsText">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Enter number of Tweets to receive. The greater the number of Tweets the longer it will take to complete"/>
+          <labelFor value="7df7a"/>
+          <text value="Enter number of Tweets to receive in the stream."/>
         </properties>
       </component>
       <component id="2ec9a" class="javax.swing.JLabel" binding="collectionLabel">
         <constraints>
-          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Select an existing collection to insert into or enter a new collection"/>
+          <labelFor value="ed5db"/>
+          <text value="Select an existing collection to insert into or enter a new collection."/>
         </properties>
       </component>
       <component id="bb53a" class="javax.swing.JLabel" binding="errorLabel">
         <constraints>
-          <grid row="12" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="14" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <foreground color="-4521979"/>
@@ -54,7 +57,7 @@
       </component>
       <component id="7ebd9" class="javax.swing.JLabel" binding="informationLabel">
         <constraints>
-          <grid row="10" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="12" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <foreground color="-4521979"/>
@@ -63,7 +66,7 @@
       </component>
       <component id="7df7a" class="javax.swing.JTextField" binding="numberOfTweets">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -71,7 +74,7 @@
       </component>
       <component id="caf53" class="javax.swing.JLabel" binding="informationLabel2">
         <constraints>
-          <grid row="11" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="13" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <foreground color="-4521472"/>
@@ -80,7 +83,7 @@
       </component>
       <component id="ed5db" class="javax.swing.JComboBox" binding="collectionsList">
         <constraints>
-          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <editable value="true"/>
@@ -88,7 +91,7 @@
       </component>
       <component id="6fb07" class="javax.swing.JButton" binding="refreshCollectionList">
         <constraints>
-          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Refresh collections list"/>
@@ -96,31 +99,24 @@
       </component>
       <component id="d9b0c" class="javax.swing.JButton" binding="searchButton">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value="Execute ONLY search"/>
         </properties>
       </component>
       <component id="e81fd" class="javax.swing.JButton" binding="submit">
         <constraints>
-          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Execute both search and stream/ only stream"/>
-        </properties>
-      </component>
-      <component id="abd4e" class="javax.swing.JCheckBox" binding="searchTickBox">
-        <constraints>
-          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Tick this to carry out a search along with the stream when clicking the above button. "/>
+          <text value="Execute Twitter stream"/>
         </properties>
       </component>
       <component id="a9769" class="javax.swing.JTextPane" binding="InformationPane">
         <constraints>
-          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="20" height="20"/>
           </grid>
         </constraints>
@@ -129,6 +125,35 @@
           <font style="1"/>
           <foreground color="-4521472"/>
           <text value="WARNING: If you run a search again shortly after running previously, duplicates may be inserted, allow at least 5 minutes between running searches"/>
+        </properties>
+      </component>
+      <component id="abd4e" class="javax.swing.JCheckBox" binding="searchTickBox">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <label value="Tick to enable Twitter searching"/>
+          <text value="Tick to enable Twitter searching"/>
+        </properties>
+      </component>
+      <component id="ca0c0" class="javax.swing.JFormattedTextField" binding="dateFormattedTextField">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <enabled value="false"/>
+        </properties>
+      </component>
+      <component id="f7f51" class="javax.swing.JLabel" binding="datePickerLabel">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <labelFor value="ca0c0"/>
+          <text value="Input a date for search to find tweets for in the format dd-mm-yyyy"/>
         </properties>
       </component>
     </children>

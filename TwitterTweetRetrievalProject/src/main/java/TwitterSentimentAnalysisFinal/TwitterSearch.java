@@ -20,11 +20,11 @@ public class TwitterSearch {
     static Date tweetDate;
 
 
-    public static boolean searchTwitter(DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, String wordsToSearch) {
+    public static boolean searchTwitter(DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, String wordsToSearch, String searchDate) {
         Twitter twitter = new TwitterFactory().getInstance();
         Query query = new Query(wordsToSearch);
         //query.setSince("2017-04-03");
-        query.setUntil("2017-04-04"); //--USE THIS FOR SPECIFIC DATE TO RETRIEVE
+        query.setUntil(searchDate); //--USE THIS FOR SPECIFIC DATE TO RETRIEVE
         query.setLang("en");
         QueryResult result;
         int Count=0;

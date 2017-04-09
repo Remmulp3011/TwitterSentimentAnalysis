@@ -34,6 +34,7 @@ public class TwitterStream {
         StatusListener listener = new StatusListener() {
 
             public void onStatus(Status status) {
+
                 //Check if it is a retweet, if so skip it
                 if (!status.isRetweet()) {
                     if (currentNumberTweetsRetrieved[0] < numberTweetsToRetrieve) {
