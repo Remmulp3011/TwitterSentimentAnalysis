@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,7 +39,6 @@ public class UserInterfaceProcess extends JFrame {
     private JLabel datePickerLabel;
     private JLabel timerLabel;
     private JLabel numberOfRequestsLimit;
-    private JLabel imageLogo;
     private static int numberOfTweetsUsable;
     private String wordsToSearchUsable;
     private String collectionToInsertIntoUsable;
@@ -57,7 +55,7 @@ public class UserInterfaceProcess extends JFrame {
     private String absolutePathOfResourceFile = new File("src/main/resources/mongoDbConnection.properties").getAbsolutePath();
     private String collectionName;
     private List<String> list;
-    private Set<String> colls;
+    private Set<String> collections;
     private String dateFormatSearchUsable = null;
     private String datePattern = "\\d{4}-\\d{2}-\\d{2}";
     private boolean timerRunning = false;
@@ -99,8 +97,7 @@ public class UserInterfaceProcess extends JFrame {
                                     informationLabel.setText("Running analysis... searching Twitter for past tweets using: \"" + wordsToSearchUsable + "\" and inserting into \"" + collectionToInsertIntoUsable + "\".");
                                     informationLabel2.setText("Check analytics tool for results.");
                                     searchToBeDone = true;
-                                    if(!timerRunning)
-                                    {
+                                    if(!timerRunning) {
                                         counter = 900;
                                         timer();
                                     }
@@ -109,8 +106,7 @@ public class UserInterfaceProcess extends JFrame {
                                     }
                                     searchToBeDone = false;
                                 }
-                                else
-                                {
+                                else {
                                     errorLabel.setText("Enter a date in the format yyyy-mm-dd");
                                     error = true;
                                 }
@@ -129,8 +125,7 @@ public class UserInterfaceProcess extends JFrame {
                         }
 
                 }
-                else
-                {
+                else {
                     informationLabel.setText(" ");
                     informationLabel2.setText(" ");
                     errorLabel.setText("Complete all fields before submitting.");
@@ -145,8 +140,7 @@ public class UserInterfaceProcess extends JFrame {
                         errorLabel.setText("");
                         dateFormatSearchUsable = dateFormattedTextField.getText();
                         if(dateFormatSearchUsable.matches(datePattern)) {
-                            if(!timerRunning)
-                            {
+                            if(!timerRunning) {
                                 counter = 900;
                                 timer();
                             }
@@ -160,13 +154,11 @@ public class UserInterfaceProcess extends JFrame {
                             DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
                             searchToBeDone = false;
                         }
-                        else
-                        {
+                        else {
                             errorLabel.setText("Enter a date in the format yyyy-mm-dd");
                         }
                     }
-                    else
-                    {
+                    else {
                         informationLabel.setText(" ");
                         informationLabel2.setText(" ");
                         errorLabel.setText("Complete collection and search phrase fields before submitting.");
@@ -188,8 +180,7 @@ public class UserInterfaceProcess extends JFrame {
                     searchButton.setEnabled(true);
                     submit.setText("Execute Twitter search AND stream");
                 }
-                else
-                {
+                else {
                     dateFormattedTextField.setEditable(false);
                     dateFormattedTextField.setEnabled(false);
                     searchButton.setEnabled(false);
@@ -233,8 +224,8 @@ public class UserInterfaceProcess extends JFrame {
 
             MongoClient mongoClient = new MongoClient(uri);
             DB db = mongoClient.getDB(databaseName);
-            colls = db.getCollectionNames();
-            list = new ArrayList<>(colls);
+            collections = db.getCollectionNames();
+            list = new ArrayList<>(collections);
 
             collectionsList.removeAllItems();
 
@@ -262,25 +253,20 @@ public class UserInterfaceProcess extends JFrame {
                 System.out.println(counter);
                 minutesRemainder[0] = counter % 60; //gets the seconds for the minute
                 wholeMinutes[0] = (int) Math.floor(counter/60); //rounds the minutes to the minute
-                if(wholeMinutes[0] < 10 && minutesRemainder[0] >= 10)
-                {
+                if(wholeMinutes[0] < 10 && minutesRemainder[0] >= 10) {
                     timerLabel.setText("Timer for request limit:" + "0" + wholeMinutes[0] + ":" + minutesRemainder[0]);
                 }
-                else if(minutesRemainder[0] < 10 && wholeMinutes[0] >= 10)
-                {
+                else if(minutesRemainder[0] < 10 && wholeMinutes[0] >= 10) {
                     timerLabel.setText("Timer for request limit:" + wholeMinutes[0] + ":" + "0" + minutesRemainder[0]);
                 }
-                else if(minutesRemainder[0] < 10 && wholeMinutes[0] < 10)
-                {
+                else if(minutesRemainder[0] < 10 && wholeMinutes[0] < 10) {
                     timerLabel.setText("Timer for request limit:" + "0" + wholeMinutes[0] + ":" + "0" + minutesRemainder[0]);
                 }
-                else
-                {
+                else {
                     timerLabel.setText("Timer for request limit:" + wholeMinutes[0] + ":" + minutesRemainder[0]);
                 }
                 numberOfRequestsLimit.setText("Number of requests: " + String.valueOf(TwitterSearch.requests) + "/170");
-                if(counter <= 0)
-                {
+                if(counter <= 0) {
                     numberOfRequestsLimit.setText("Number of requests: 0/170");
                     timerRunning = false;
                     TwitterSearch.requests = 0;
