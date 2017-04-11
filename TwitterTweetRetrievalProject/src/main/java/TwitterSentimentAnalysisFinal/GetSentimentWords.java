@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by matthewplummer on 19/03/2017.
+ * Created by Matthew Plummer.
+ * This class will retrieve the sentiment words that have been populated into the sentiment collection.
+ * These words are used to carry out sentiment analysis on the retrieved tweets.
+ * This class is run once per application execution to ensure an updated list of sentiment words are used.
  */
 public class GetSentimentWords {
 

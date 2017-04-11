@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by matthewplummer on 19/03/2017.
+ * Created by Matthew Plummer.
+ * This class will add a listener to Twitter to retrieve a feed of live feeds based user parameters selected.
+ * This class operates in a similar fashion to the TwitterSearch class with regards to it calls to other classes.
  */
 public class TwitterStream {
     public static String tweetText;

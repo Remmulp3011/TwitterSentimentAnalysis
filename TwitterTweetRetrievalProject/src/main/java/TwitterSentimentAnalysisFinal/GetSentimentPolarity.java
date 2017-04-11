@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by matthewplummer on 19/03/2017.
+ * Created by Matthew Plummer.
+ * This class with retrieve the polarity of the sentiment words from the sentiment collection.
+ * This return is later used then analysing tweets for sentiments present.
  */
 public class GetSentimentPolarity {
 

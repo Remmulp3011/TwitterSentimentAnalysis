@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created by matthewplummer on 19/03/2017.
+ * Created by Matthew Plummer.
+ * This class handles the connections to the database and resulting collections.
+ * Properties for the parameters to connect to the database and collection and read in from here.
+ * Other classes for further functionality is called from here
+ * This class is called multiple times from different locations when and operation involving the database is needed.
  */
 public class DatabaseConnection {
 

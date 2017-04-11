@@ -3,7 +3,10 @@ package TwitterSentimentAnalysisFinal;
 import java.util.*;
 
 /**
- * Created by matthewplummer on 19/03/2017.
+ * Created by Matthew Plummer.
+ * This class will carry out the sentiment analysis on each tweet received.
+ * The returns from the GetSentimentWords and GetSentimentPolarity classes are used here.
+ * At this point the over all sentiment value and sentiment words found are or decided upon and produced.
  */
 public class SentimentAnalysis {
     public static List matchSentiment(List<String> sentimentPolarityDocumentList, List<String> sentimentWordDocumentList, String tweetText)

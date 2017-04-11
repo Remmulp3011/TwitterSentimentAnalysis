@@ -8,7 +8,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by matthewplummer on 03/04/2017.
+ * Created by Matthew Plummer.
+ * This class will determine the polarity of the tweet based upon the value produced for the overall sentiment.
+ * The simplified date is calculated and stored in this class.
+ * At this point all analysed data with regards to each tweet is inserted into the specified collection.
  */
 public class TweetAnalysisAndInsert {
     static String sentimentWordsFound, formattedTweetDate, simplifiedTweetDate;

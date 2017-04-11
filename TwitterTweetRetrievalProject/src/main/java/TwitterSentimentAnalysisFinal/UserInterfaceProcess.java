@@ -17,7 +17,11 @@ import java.util.*;
 import java.util.Timer;
 
 /**
- * Created by matthewplummer on 22/03/2017.
+ * Created by Matthew Plummer.
+ * All user interface elements are handled here.
+ * This includes the limitations for the API call window on Twitter of 180 requests per 15 minutes.
+ * User inputs are passed to other classes from here in order to run the application.
+ * The application is run from here, this is the entry point for the programme.
  */
 public class UserInterfaceProcess extends JFrame {
     private JButton submit;
@@ -123,7 +127,6 @@ public class UserInterfaceProcess extends JFrame {
                                 informationLabel2.setText("Check analytics tool for results.");
                                 DatabaseConnection.connection(collectionToInsertIntoUsable, numberOfTweetsUsable, wordsToSearchUsable, searchToBeDone, dateFormatSearchUsable);
                         }
-
                 }
                 else {
                     informationLabel.setText(" ");

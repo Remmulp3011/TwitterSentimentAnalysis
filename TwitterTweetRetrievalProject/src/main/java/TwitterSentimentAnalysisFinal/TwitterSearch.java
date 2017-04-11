@@ -8,7 +8,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by matthewplummer on 03/04/2017.
+ * Created by Matthew Plummer.
+ * This class executes code to carry out its purpose of a Twitter search.
+ * This class is only run if the user selects the option to carry out a search from the UI.
+ * Other classes are called for this class in a similar fashion as that in the TwitterStream class.
+ * A clause to keep record of the API limitations with regards to the number of requests are stored here.
  */
 public class TwitterSearch {
     static Object lock5 = new Object();
