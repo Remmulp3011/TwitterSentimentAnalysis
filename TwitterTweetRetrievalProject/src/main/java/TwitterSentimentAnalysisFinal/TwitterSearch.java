@@ -28,14 +28,13 @@ public class TwitterSearch {
     public static boolean searchTwitter(DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, String wordsToSearch, String searchDate) {
         Twitter twitter = new TwitterFactory().getInstance();
         Query query = new Query(wordsToSearch);
-        query.setUntil(searchDate); //--USE THIS FOR SPECIFIC DATE TO RETRIEVE
+        query.setUntil(searchDate);
         query.setLang("en");
         QueryResult result;
         int Count=0;
 
         if(requests >= 170)
         {
-            System.out.println("NUMBER OF TWEETS = " + Count);
             return searchCompleted;//Stop searching as request limit has been met
         }
 
@@ -43,7 +42,6 @@ public class TwitterSearch {
             do {
                 result = twitter.search(query);
                 requests ++;
-                System.out.println("NUMBER OF REQUESTS = " + requests);
                 List<Status> tweets = result.getTweets();
                 for (Status tweet : tweets) {
 
@@ -58,8 +56,8 @@ public class TwitterSearch {
                     {
                         analysisAndInsertCompleted = TweetAnalysisAndInsert.analysisAndInsert(overallSentimentAndWordsFound, tweetDate, tweetText, twitterColl);
                     }
-                    System.out.println("NUMBER OF TWEETS RETRIEVED = " + Count);
                     Count++;
+                    System.out.println("Number of tweets retrieved currently: " + Count);
                 }
                 try {
                     Thread.sleep(500);

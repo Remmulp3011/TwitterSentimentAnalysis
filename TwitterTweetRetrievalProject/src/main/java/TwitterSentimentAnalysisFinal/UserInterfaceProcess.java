@@ -253,7 +253,6 @@ public class UserInterfaceProcess extends JFrame {
             @Override
             public void run() {
                 counter--;//increments the counter
-                System.out.println(counter);
                 minutesRemainder[0] = counter % 60; //gets the seconds for the minute
                 wholeMinutes[0] = (int) Math.floor(counter/60); //rounds the minutes to the minute
                 if(wholeMinutes[0] < 10 && minutesRemainder[0] >= 10) {

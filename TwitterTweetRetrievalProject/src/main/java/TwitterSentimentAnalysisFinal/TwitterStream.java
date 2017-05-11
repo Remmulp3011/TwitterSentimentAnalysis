@@ -3,17 +3,16 @@ package TwitterSentimentAnalysisFinal;
 import com.mongodb.DBCollection;
 import twitter4j.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Matthew Plummer.
  * This class will add a listener to Twitter to retrieve a feed of live feeds based user parameters selected.
  * This class operates in a similar fashion to the TwitterSearch class with regards to it calls to other classes.
  */
+
 public class TwitterStream {
     public static String tweetText;
     public static Date tweetDate;
@@ -30,6 +29,7 @@ public class TwitterStream {
     public static void tweetStream(final DBCollection twitterColl, final List<String> sentimentWordDocumentList, final List<String> sentimentPolarityDocumentList, final int numberOfTweets, String wordsToSearch) {
         final int numberTweetsToRetrieve = numberOfTweets;
         String searchWords[] = {wordsToSearch};
+        currentNumberTweetsRetrieved[0] = 0;
 
         final twitter4j.TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 
@@ -44,18 +44,6 @@ public class TwitterStream {
                         tweetDate = status.getCreatedAt();
                         tweetText = status.getText();
 
-                        /*DBCursor twitterDataCursor = twitterColl.find();
-
-                        //Used to prevent duplicate tweets being inserted i.e. when they are spam marketing tweets.
-                        while (twitterDataCursor.hasNext()) {
-                            BasicDBObject currentDocument = (BasicDBObject) twitterDataCursor.next();
-                            twitterDocumentList.add(currentDocument.getString("tweetText"));
-                            if (twitterDocumentList.get(0).equals(tweetText)) {
-                                duplicate = true;
-                            }
-                        }*/
-
-                        //if (duplicate == false) {
                             synchronized (lock3) {
                                 overallSentimentAndWordsFound = SentimentAnalysis.matchSentiment(sentimentPolarityDocumentList, sentimentWordDocumentList, tweetText);
                             }
@@ -81,11 +69,6 @@ public class TwitterStream {
                         twitterStream.shutdown();
                     }
                 }
-                //else
-                //{
-                //    duplicate = false;
-                //}
-            //}
 
             public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
             }
@@ -111,7 +94,6 @@ public class TwitterStream {
         FilterQuery tweetFilterQuery = new FilterQuery();
         tweetFilterQuery.track(searchWords);//filter on words specified
         tweetFilterQuery.language(new String[]{"en"});//show only english tweets
-         //Call listen which will get tweets and apply filter (called once and onStatus is looped)
         twitterStream.addListener(listener);
         twitterStream.filter(tweetFilterQuery);
     }
